@@ -1,6 +1,3 @@
-from logging import raiseExceptions
-
-
 class Student:
     def __init__(self, name, surname, gender):
         self.name = name
