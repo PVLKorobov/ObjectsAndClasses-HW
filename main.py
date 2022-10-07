@@ -18,6 +18,24 @@ class Student:
                 lecturer.ratings[cource] = [rating]
         else:
             print("Ошибка")
+
+    def get_average_grade(self):
+        grades_amount = 0
+        sum = 0
+        for cource_ratings in self.grades:
+            grades_amount += len(self.grades[cource_ratings])
+            for rating in self.grades[cource_ratings]:
+                sum += rating
+        return sum / grades_amount
+    
+    def __str__(self):
+        return f" Имя: {self.name} \n Фамилия: {self.surname} \n Средняя оценка за домашние задания: {self.get_average_grade()} \n Курсы в процессе изучения: {', '.join(self.courses_in_progress)} \n Завершённые курсы: {', '.join(self.finished_courses)}"
+
+    def compare_to(self, other_student):
+        if self.get_average_grade() > other_student.get_average_grade():
+            print(f"Оценки {self.name} {self.surname} выше чем у {other_student.name} {other_student.surname}")
+        else:
+            print(f"Оценки {self.name} {self.surname} ниже чем у {other_student.name} {other_student.surname}")
         
 class Mentor:
     def __init__(self, name, surname):
@@ -38,6 +56,12 @@ class Lecturer(Mentor):
             for rating in self.ratings[cource_ratings]:
                 sum += rating
         return sum / ratings_amount
+    
+    def compare_to(self, other_lector):
+        if self.get_average_rating() > other_lector.get_average_rating():
+            print(f"Рейтинг {self.name} {self.surname} лучше чем у {other_lector.name} {other_lector.surname}")
+        else:
+            print(f"Рейтинг {self.name} {self.surname} хуже чем у {other_lector.name} {other_lector.surname}")
         
 
     def __str__(self):
@@ -54,36 +78,115 @@ class Reviewer(Mentor):
             else:
                 student.grades[course] = [grade]
         else:
-            return 'Ошибка' # Зачем этот return, если мы не делаем print этого метода? 
-                            # Программа не выведет строку 'Ошибка'
+            # return 'Ошибка' # Зачем этот return, если мы не делаем print этого метода? 
+                              # Программа не выведет строку 'Ошибка' через return
+            print('Ошибка')
+
     def __str__(self):
-        return f" Имя: {self.name} \n Фамилия: {self.surname}"
+        return f"Имя: {self.name} \n Фамилия: {self.surname}"
 
 
- 
+# Функция подсчёта средней оценки лекторов по курсу cource
+def lecturer_average_on_cource(cource, lecturer_list):
+    overall_sum = 0
+    overall_count = 0
+    for lector in lecturer_list:
+        if cource in lector.ratings:
+            overall_count += len(lector.ratings[cource])
+            for rating in lector.ratings[cource]:
+                overall_sum += rating
+    return overall_sum / overall_count
+
+# Функция подсчёта среднего балла студентов по курсу cource
+def student_average_on_cource(cource, student_list):
+    overall_sum = 0
+    overall_count = 0
+    for student in student_list:
+        if cource in student.grades:
+            overall_count += len(student.grades[cource])
+            for grade in student.grades[cource]:
+                overall_sum += grade
+    return overall_sum / overall_count
+
+
+# Инициализация экземпляров класса Student
 best_student = Student('Ruoy', 'Eman', 'your_gender')
-best_student.courses_in_progress += ['Python']
- 
+best_student.courses_in_progress += ['Python', 'Java', 'HTML']
+best_student.finished_courses += ['Введение в программирование', 'Git']
+
+second_best_student = Student('Leroy', 'Jenkins', 'attack_helicopter')
+second_best_student.courses_in_progress += ['Введение в программирование', 'HTML', 'Git']
+second_best_student.finished_courses += ['Python', 'Java']
+
+# Инициализация экземпляров класса Lecturer
 cool_lecturer = Lecturer('Elden', 'John')
-cool_lecturer.courses_attached += ['Python']
+cool_lecturer.courses_attached += ['Python', 'Git', 'HTML']
 
+even_cooler_lecturer = Lecturer('Anton', 'Antonov')
+even_cooler_lecturer.courses_attached += ['HTML', 'Введение в программирование', 'Java']
+
+# Инициализация экземпляров класса Reviewer
 cool_reviewer = Reviewer('Some', 'Buddy')
-cool_reviewer.courses_attached += ['Python']
-cool_reviewer.courses_attached += ['Java']
- 
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 10)
+cool_reviewer.courses_attached += ['Python', 'Java']
 
+cooler_reviewer = Reviewer('That', 'I used to know')
+cooler_reviewer.courses_attached += ['HTML', 'Git', 'Введение в программирование']
+
+# Выставление оценок студентам
+cool_reviewer.rate_hw(best_student, 'Java', 7)
+cool_reviewer.rate_hw(best_student, 'Python', 5)
+cooler_reviewer.rate_hw(best_student, 'HTML', 10)
+
+cooler_reviewer.rate_hw(second_best_student, 'Введение в программирование', 8)
+cooler_reviewer.rate_hw(second_best_student, 'Git', 10)
+cooler_reviewer.rate_hw(second_best_student, 'HTML', 6)
+
+# Оценка лекторов студентами
 best_student.rate_lector(cool_lecturer, 'Python', 8)
-best_student.rate_lector(cool_lecturer, 'Python', 10)
- 
-# print(best_student.grades)
-# print(best_student.courses_in_progress)
-# print(cool_lecturer.courses_attached)
-print(cool_lecturer.ratings)
-# print(cool_reviewer.courses_attached)
+best_student.rate_lector(even_cooler_lecturer, 'Java', 10)
 
-# print(cool_reviewer)
+second_best_student.rate_lector(cool_lecturer, 'Git', 8)
+second_best_student.rate_lector(even_cooler_lecturer, 'Введение в программирование', 10)
+second_best_student.rate_lector(even_cooler_lecturer, 'HTML', 7)
+best_student.rate_lector(cool_lecturer, 'HTML', 10)
+best_student.rate_lector(cool_lecturer, 'HTML', 6)
+
+# Сравнение студентов
+best_student.compare_to(second_best_student)
+print()
+second_best_student.compare_to(best_student)
+print()
+
+# Сравнение лекторов
+cool_lecturer.compare_to(even_cooler_lecturer)
+print()
+even_cooler_lecturer.compare_to(cool_lecturer)
+print()
+
+# Подсчёт среднего балла по всем студентам на одном курсе
+student_list = [best_student, second_best_student]
+print("Средний балл студентов на курсе HTML:" ,student_average_on_cource('HTML', student_list), '\n')
+
+# Подсчёт средней оценки лекторов на одном курсе
+lecturer_list = [cool_lecturer, even_cooler_lecturer]
+print("Средний балл лекторов на курсе HTML:", lecturer_average_on_cource('HTML', lecturer_list), '\n')
+
+# Вывод методов __str__ экземпляров классов
+
+## Студентов
+print(10 * '--')
+print(best_student)
+print()
+print(second_best_student)
+
+## Лекторов
+print(10 * '--')
 print(cool_lecturer)
 print()
+print(even_cooler_lecturer)
+
+## Проверяющих
+print(10 * '--')
+print(cool_reviewer)
+print()
+print(cooler_reviewer)
