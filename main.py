@@ -1,6 +1,3 @@
-from logging import raiseExceptions
-
-
 class Student:
     def __init__(self, name, surname, gender):
         self.name = name
@@ -31,12 +28,12 @@ class Student:
     def __str__(self):
         return f" Имя: {self.name} \n Фамилия: {self.surname} \n Средняя оценка за домашние задания: {self.get_average_grade()} \n Курсы в процессе изучения: {', '.join(self.courses_in_progress)} \n Завершённые курсы: {', '.join(self.finished_courses)}"
 
-    def compare_to(self, other_student):
-        if self.get_average_grade() > other_student.get_average_grade():
-            print(f"Оценки {self.name} {self.surname} выше чем у {other_student.name} {other_student.surname}")
-        else:
-            print(f"Оценки {self.name} {self.surname} ниже чем у {other_student.name} {other_student.surname}")
-        
+    def __lt__(self, other_student):
+       return self.get_average_grade() < other_student.get_average_grade()
+    
+    def __gt__(self, other_student):
+       return self.get_average_grade() > other_student.get_average_grade()
+
 class Mentor:
     def __init__(self, name, surname):
         self.name = name
@@ -57,12 +54,11 @@ class Lecturer(Mentor):
                 sum += rating
         return sum / ratings_amount
     
-    def compare_to(self, other_lector):
-        if self.get_average_rating() > other_lector.get_average_rating():
-            print(f"Рейтинг {self.name} {self.surname} лучше чем у {other_lector.name} {other_lector.surname}")
-        else:
-            print(f"Рейтинг {self.name} {self.surname} хуже чем у {other_lector.name} {other_lector.surname}")
-        
+    def __lt__(self, other_lector):
+       return self.get_average_rating() < other_lector.get_average_rating()
+    
+    def __gt__(self, other_lector):
+       return self.get_average_rating() > other_lector.get_average_rating()        
 
     def __str__(self):
         return f" Имя: {self.name} \n Фамилия: {self.surname} \n Средняя оценка за лекции: {self.get_average_rating()}"
@@ -152,16 +148,16 @@ best_student.rate_lector(cool_lecturer, 'HTML', 10)
 best_student.rate_lector(cool_lecturer, 'HTML', 6)
 
 # Сравнение студентов
-best_student.compare_to(second_best_student)
-print()
-second_best_student.compare_to(best_student)
-print()
+if best_student > second_best_student:
+    print(f"Оценки {best_student.name} {best_student.surname} выше чем у {second_best_student.name} {second_best_student.surname}")
+else:
+    print(f"Оценки {best_student.name} {best_student.surname} ниже чем у {second_best_student.name} {second_best_student.surname}")
 
 # Сравнение лекторов
-cool_lecturer.compare_to(even_cooler_lecturer)
-print()
-even_cooler_lecturer.compare_to(cool_lecturer)
-print()
+if cool_lecturer > even_cooler_lecturer:
+    print(f"Рейтинг {cool_lecturer.name} {cool_lecturer.surname} лучше чем у {even_cooler_lecturer.name} {even_cooler_lecturer.surname}")
+else:
+    print(f"Рейтинг {cool_lecturer.name} {cool_lecturer.surname} хуже чем у {even_cooler_lecturer.name} {even_cooler_lecturer.surname}")
 
 # Подсчёт среднего балла по всем студентам на одном курсе
 student_list = [best_student, second_best_student]
